@@ -12,6 +12,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include <sstream>
+#include <iomanip>
 
 void CDiskInfoDlg::Refresh(DWORD flagForceUpdate)
 {
@@ -2459,6 +2461,12 @@ void CDiskInfoDlg::SaveSmartInfo(DWORD i)
 		AppendLog(dir, disk, cstr, time, m_Ata.vars[i].Attribute[j].CurrentValue,
 			flagFirst, m_Ata.vars[i].Threshold[j].ThresholdValue);
 
+		if (m_RecordRawValues)
+		{
+			AppendLog_ByteHex(dir, disk, cstr, time, m_Ata.vars[i].Attribute[j].RawValue,
+				flagFirst, m_Ata.vars[i].Threshold[j].ThresholdValue);
+		}
+
 		switch (m_Ata.vars[i].Attribute[j].Id)
 		{
 		case 0x05: // Reallocated Sectors Count
@@ -2525,6 +2533,61 @@ BOOL CDiskInfoDlg::AppendLog(CString dir, CString disk, CString file, CTime time
 				}
 			}
 			catch (CFileException * e)
+			{
+				DebugPrint(L"CFileException");
+				e->Delete();
+			}
+			outFile.Close();
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+BOOL CDiskInfoDlg::AppendLog_ByteHex(CString dir, CString disk, CString file, CTime time, BYTE* value, BOOL flagFirst, int threshold)
+{
+	TCHAR str[256];
+	std::string a = hexStr(value, sizeof(value));
+	TCHAR values[256] = { a };
+	// First Time
+	if (flagFirst)
+	{
+		wsprintf(str, _T("%d"), values);
+		WritePrivateProfileString(disk + _T("FIRST"), file, str, dir + _T("\\") + SMART_INI);
+
+		if (file.GetLength() == 2)
+		{
+			wsprintf(str, _T("%d"), threshold);
+			WritePrivateProfileString(disk + _T("THRESHOLD"), file, str, dir + _T("\\") + SMART_INI);
+		}
+	}
+
+	GetPrivateProfileString(disk, file, _T("-1"), str, 256, dir + _T("\\") + SMART_INI);
+	//std::string pre = str;
+	TCHAR pre[256];
+
+	if (wcscmp(pre, values) != 0)
+	{
+		// Update
+		wsprintf(str, _T("%d"), values);
+		WritePrivateProfileString(disk, file, str, dir + _T("\\") + SMART_INI);
+
+		CString line;
+		line.Format(_T("%s,%d\n"), time.Format(_T("%Y/%m/%d %H:%M:%S")), values);
+
+		CStdioFile outFile;
+		if (outFile.Open(dir + _T("\\") + file + _T(".csv"),
+			CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite | CFile::typeText))
+		{
+			ULONGLONG fileLength = outFile.GetLength();
+			try
+			{
+				if (outFile.SeekToEnd() == fileLength)
+				{
+					outFile.WriteString(line);
+				}
+			}
+			catch (CFileException* e)
 			{
 				DebugPrint(L"CFileException");
 				e->Delete();

@@ -11,6 +11,8 @@
 #include "DarkMode.h"
 
 #include <atlimage.h>
+#include <sstream>
+#include <iomanip>
 
 class CDialogFx : public CDialog
 {
@@ -53,6 +55,7 @@ protected:
 	CString i18n(CString section, CString key, BOOL inEnglish = FALSE);
 	void OpenUrl(CString url);
 	void SetLayeredWindow(HWND hWnd, BYTE alpha);
+	std::string hexStr(BYTE* data, int len);
 
 	// MessageMap
 	DECLARE_MESSAGE_MAP()

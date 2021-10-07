@@ -13,6 +13,8 @@
 
 #include <Shlwapi.h>
 #include <strsafe.h>
+#include <sstream>
+#include <iomanip>
 
 using namespace Gdiplus;
 #pragma	comment(lib,"Gdiplus.lib")
@@ -474,6 +476,17 @@ void CDialogFx::SetLayeredWindow(HWND hWnd, BYTE alpha)
 	{
 		::SetLayeredWindowAttributes(hWnd, 0, alpha, LWA_ALPHA);
 	}
+}
+
+std::string CDialogFx::hexStr(BYTE* data, int len)
+{
+	std::stringstream ss;
+	ss << std::hex;
+
+	for (int i(0); i < len; ++i)
+		ss << std::setw(2) << std::setfill('0') << (int)data[i];
+
+	return ss.str();
 }
 
 //------------------------------------------------

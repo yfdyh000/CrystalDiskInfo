@@ -183,6 +183,7 @@ protected:
 	DWORD m_WaitTimeStatus;
 	DWORD m_AutoDetectionStatus;
 	DWORD m_RawValues;
+	BOOL m_RecordRawValues;
 	BOOL m_NowDetectingUnitPowerOnHours;
 
 	CArray<DWORD, DWORD> m_GraphProcessId;
@@ -365,6 +366,7 @@ protected:
 
 	void Refresh(DWORD flagForceUpdate);
 	BOOL AppendLog(CString dir, CString disk, CString file, CTime time, int value, BOOL firstTime = FALSE, int threshold = 0);
+	BOOL AppendLog_ByteHex(CString dir, CString disk, CString file, CTime time, BYTE* value, BOOL flagFirst, int threshold);
 	BOOL AddEventLog(DWORD eventId, WORD eventType, CString message);
 	BOOL SendMail(DWORD eventId, CString title, CString message);
 	BOOL AddAlarmHistory(DWORD eventId, CString disk, CString message);
@@ -560,6 +562,8 @@ public:
 	afx_msg void OnRawValues10All();
 	afx_msg void OnRawValues2byte();
 	afx_msg void OnRawValues1byte();
+	afx_msg void OnRecordRawValues();
+	afx_msg void OnRecordRawValues(bool checked);
 //	afx_msg void OnAutoDetection();
 	afx_msg void OnAsciiView();
 	afx_msg void OnAlertMail();

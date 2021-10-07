@@ -243,7 +243,7 @@ CDiskInfoDlg::CDiskInfoDlg(CWnd* pParent /*=NULL*/, BOOL flagStartupExit)
 	m_WaitTimeStatus = 0;
 	m_AutoDetectionStatus = 0;
 	m_RawValues = 0;
-	
+	m_RecordRawValues = FALSE;
 	m_NowDetectingUnitPowerOnHours = FALSE;
 	m_bInitializing = TRUE;
 
@@ -766,6 +766,7 @@ BEGIN_MESSAGE_MAP(CDiskInfoDlg, CMainDialogFx)
 	ON_COMMAND(ID_RAW_VALUES_10_ALL, &CDiskInfoDlg::OnRawValues10All)
 	ON_COMMAND(ID_RAW_VALUES_2BYTE, &CDiskInfoDlg::OnRawValues2byte)
 	ON_COMMAND(ID_RAW_VALUES_1BYTE, &CDiskInfoDlg::OnRawValues1byte)
+	ON_COMMAND(ID_RECORD_RAW_VALUES, &CDiskInfoDlg::OnRecordRawValues)
 	ON_COMMAND(ID_ASCII_VIEW, &CDiskInfoDlg::OnAsciiView)
 	ON_COMMAND(ID_ALERT_MAIL, &CDiskInfoDlg::OnAlertMail)
 	ON_COMMAND(ID_MAIL_SETTINGS, &CDiskInfoDlg::OnMailSettings)

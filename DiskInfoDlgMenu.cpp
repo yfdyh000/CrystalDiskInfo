@@ -484,6 +484,24 @@ void CDiskInfoDlg::CheckRadioRawValues()
 	DrawMenuBar();
 }
 
+void CDiskInfoDlg::OnRecordRawValues()
+{
+	CMenu* menu = GetMenu();
+	menu->CheckMenuItem(ID_RECORD_RAW_VALUES, m_RecordRawValues);
+	SetMenu(menu);
+	DrawMenuBar();
+}
+void CDiskInfoDlg::OnRecordRawValues(bool checked)
+{
+	m_RecordRawValues = checked;
+	OnRecordRawValues();
+	CString cstr;
+	cstr.Format(_T("%d"), checked ? 1 : 0);
+	WritePrivateProfileString(_T("Setting"), _T("RecordRawValues"), cstr, m_Ini);
+
+	Refresh(TRUE);
+}
+
 void CDiskInfoDlg::OnOpenDiskManagement()
 {
 	ShellExecute(NULL, NULL, _T("diskmgmt.msc"), NULL, NULL, SW_SHOWNORMAL);	
