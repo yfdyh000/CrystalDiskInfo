@@ -15,11 +15,19 @@ jobs:
   build:
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        os: [ARM, ARM64, Win32, x64]
+        con: [Debug, Release, ReleaseKureiKei, ReleaseShizuku]
     steps:
+    - env:
+        CONFIGURATION: ${{ matrix.os }}
+        BUILD_CONFIGURATION: ${{ matrix.con }}
+    
     - uses: actions/checkout@v2
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.0.3
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
