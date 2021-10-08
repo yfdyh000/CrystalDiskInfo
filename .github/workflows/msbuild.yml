@@ -6,11 +6,6 @@ env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
 
-  # Configuration type to build.
-  # You can convert this to a build matrix if you need coverage of multiple configuration types.
-  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-  BUILD_CONFIGURATION: Release
-
 jobs:
   build:
     runs-on: windows-latest
@@ -19,11 +14,7 @@ jobs:
       matrix:
         os: [ARM, ARM64, Win32, x64]
         con: [Debug, Release, ReleaseKureiKei, ReleaseShizuku]
-    steps:
-    - env:
-        CONFIGURATION: ${{ matrix.os }}
-        BUILD_CONFIGURATION: ${{ matrix.con }}
-    
+    steps:   
     - uses: actions/checkout@v2
 
     - name: Add MSBuild to PATH
@@ -33,4 +24,4 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{matrix.con}} /p:platform=${{matrix.os}} ${{env.SOLUTION_FILE_PATH}}
